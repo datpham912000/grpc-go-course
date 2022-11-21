@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -19,6 +20,23 @@ func main() {
 	defer cc.Close()
 
 	c := greetpb.NewGreetServiceClient(cc)
-	fmt.Println("Created client: ", c)
+	//fmt.Println("Created client: ", c)
 
+	doUnary(c)
+
+}
+
+func doUnary(c greetpb.GreetServiceClient) {
+	fmt.Println("Starting to do Unary RPC...")
+	req := &greetpb.GreetRequest{
+		Greeting: &greetpb.Greeting{
+			FirstName: "Pham",
+			LastName:  "Dat",
+		},
+	}
+	res, err := c.Greet(context.Background(), req)
+	if err != nil {
+		log.Fatal("error while calling Greet RPC", err)
+	}
+	log.Println("Response from Greet: ", res.Result)
 }
